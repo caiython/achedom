@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     "app",
+    "authentication",
     "backend",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -143,3 +144,5 @@ CELERY_TIMEZONE = "America/Sao_Paulo"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 BROKER_URL = os.getenv('BROKER_URL')
+
+AUTH_USER_MODEL = "authentication.User"
