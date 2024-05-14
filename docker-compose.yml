@@ -28,6 +28,10 @@ services:
       - ./dotenv_files/.env
     networks:
       - app-network
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
 
   redis:
     image: redis:7.0.15-alpine
