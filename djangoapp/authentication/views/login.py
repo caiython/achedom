@@ -18,7 +18,7 @@ class Login(View):
         user = authenticate(request, username=username, password=password)
 
         if user is None:
-            messages.warning(
+            messages.error(
                 request, 'The email address or password is incorrect. Please retry...')
             return HttpResponseRedirect(reverse('login'))
 
@@ -31,7 +31,7 @@ class Login(View):
             return HttpResponseRedirect(reverse('home'))
 
         ctx = {
-            'login_url': reverse('login'),
+            'register_url': reverse('register'),
             'form': LoginForm,
         }
         return render(request, 'authentication/login.html', ctx)
