@@ -152,3 +152,8 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 BROKER_URL = os.getenv('BROKER_URL', 'change-me')
 
 AUTH_USER_MODEL = "authentication.User"
+
+CSRF_TRUSTED_ORIGINS = [
+    h.strip() for h in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if h.strip()
+]
