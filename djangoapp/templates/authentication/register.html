@@ -1,0 +1,27 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %} Register {% endblock%}
+
+{% block body %}
+    <div class="bg-dark">
+        <div class="container d-flex align-items-center justify-content-center vh-100">
+            <div class="col-lg-6 border bg-light rounded p-5">
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }} {% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <p><a class="link link-secondary" href="/"><i class="bi bi-arrow-left-short"></i>Back to Home</a></p>
+
+                <h2 class="display-6">Register</h2>
+                {% load crispy_forms_tags %}
+                {% crispy form form.helper %}
+                <p>Already have an account? <a class="link link-secondary" href="{{ login_url }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
