@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "app",
     "authentication",
     "backend",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +47,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+# Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -143,6 +149,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_TIMEZONE = "America/Sao_Paulo"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-BROKER_URL = os.getenv('BROKER_URL')
+BROKER_URL = os.getenv('BROKER_URL', 'change-me')
 
 AUTH_USER_MODEL = "authentication.User"
