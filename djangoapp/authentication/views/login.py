@@ -8,7 +8,7 @@ from django.contrib import messages
 
 
 class Login(View):
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest) -> HttpResponse:
 
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('home'))
@@ -23,7 +23,7 @@ class Login(View):
             return HttpResponseRedirect(reverse('login'))
 
         login(request, user)
-        return JsonResponse({'message': 'sucesso'})
+        return HttpResponseRedirect(reverse('home'))
 
     def get(self, request: HttpRequest) -> HttpResponse:
 
