@@ -17,18 +17,11 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
             <div>
-                
                 <h3 class="float-md-start mb-0">
                     <a class="text-light" style="text-decoration: none; user-select: none;" href="/">
                         Achedom
                     </a>
                 </h3>
-                
-                <nav class="nav nav-masthead justify-content-center float-md-end">
-                    <a class="nav-link fw-bold py-1 px-1 active" href="/">Home</a>
-                    <a class="nav-link fw-bold py-1 px-1" href="/chamados/1/">Service Orders</a>
-                    <a class="nav-link fw-bold py-1 px-1" href="/config">Configuration</a>
-                </nav>
             </div>
         </header>
 
@@ -38,7 +31,8 @@
             <h1>Achedom</h1>
             <p class="lead">Welcome to the web application Achedom.</p>
             <p class="lead">
-                <a href="/chamados/1/" class="btn btn-lg btn-light fw-bold border-white bg-white">Chamados</a>
+                <a href="{{ login_url }}" class="btn btn-lg btn-light fw-bold border-white bg-white mx-2">Login</a>
+                <a href="{{ register_url }}" class="btn btn-lg btn-light fw-bold border-white bg-white mx-2">Register</a>
             </p>
         </main>
 
