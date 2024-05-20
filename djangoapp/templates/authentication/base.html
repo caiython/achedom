@@ -28,7 +28,7 @@
                     {% endfor %}
                 {% endif %}
 
-                <p><a class="link link-secondary" href="/"><i class="bi bi-arrow-left-short"></i>Back to Home</a></p>
+                <p><a class="link link-secondary" href="/"><i class="bi bi-arrow-left-short"></i>Back to {% block back_to %}{% endblock %}</a></p>
 
                 <h2 class="display-6">{% block title_text %}{% endblock %}</h2>
                 {% load crispy_forms_tags %}
