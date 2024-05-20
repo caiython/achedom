@@ -47,6 +47,7 @@ class Register(FormView):
         form = RegisterForm()
         ctx = {
             'login_url': reverse('login'),
-            'form': form
+            'form': form,
+            'back_to': reverse('welcome')
         }
         return render(request, 'authentication/register.html', ctx)

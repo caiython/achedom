@@ -19,6 +19,7 @@ class Logout(View):
 
         form = LogoutForm()
         ctx = {
-            'form': form
+            'form': form,
+            'back_to': reverse('home')
         }
         return render(request, 'authentication/logout.html', ctx)

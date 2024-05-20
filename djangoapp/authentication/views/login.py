@@ -33,5 +33,6 @@ class Login(View):
         ctx = {
             'register_url': reverse('register'),
             'form': LoginForm,
+            'back_to': reverse('welcome')
         }
         return render(request, 'authentication/login.html', ctx)
