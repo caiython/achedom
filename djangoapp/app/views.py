@@ -21,7 +21,7 @@ def welcome(request: HttpRequest) -> HttpResponse:
 def home(request: HttpRequest) -> HttpResponse:
 
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('welcome'))
 
     ctx = {
         'home': True,
