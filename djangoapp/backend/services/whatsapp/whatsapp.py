@@ -99,11 +99,11 @@ class Whatsapp():
     def send_message(self, target, text_to_send):
         try:
             target_xpath = '//span[contains(@title,"' + target + '")]'
-            WebDriverWait(self.browser, 100).until(
+            WebDriverWait(self.browser, 5).until(
                 EC.presence_of_element_located((By.XPATH, target_xpath))).click()
             sleep(1)
             message_box_xpath = '/html/body/div[1]/div/div/div[2]/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]'
-            message_box = WebDriverWait(self.browser, 100).until(
+            message_box = WebDriverWait(self.browser, 5).until(
                 EC.presence_of_element_located((By.XPATH, message_box_xpath)))
             ActionChains(self.browser).move_to_element(
                 message_box).click().send_keys(text_to_send, Keys.ENTER).perform()
@@ -126,26 +126,48 @@ class Whatsapp():
 
     def get_contacts(self):
         contacts = []
+
         try:
             chats_xpath = '/html/body/div[1]/div/div/div[2]/div[3]/div/div[3]/div[1]/div/div'
             chats_container = self.browser.find_element(By.XPATH, chats_xpath)
-            chats_divs = chats_container.find_elements(By.XPATH, './div')
-
-            for chat_div in chats_divs:
-                try:
-                    # Tentando localizar o primeiro span possível dentro do chat_div
-                    span_element = chat_div.find_element(
-                        By.XPATH, './/div/div/div[2]/div[1]/div[1]//span')
-                    span_content = span_element.text
-                    contacts.append(span_content)
-                except Exception as e:
-                    logging.error(e)
-                    continue
-            contacts.sort()
-            return contacts
+        except NoSuchElementException:
+            try:
+                chats_xpath = '/html/body/div[1]/div/div/div[2]/div[3]/div/div[2]/div/div/div'
+                chats_container = self.browser.find_element(
+                    By.XPATH, chats_xpath)
+            except Exception as e:
+                logging.error(e)
+                return []
         except Exception as e:
             logging.error(e)
-            return None
+            return []
+
+        try:
+            chats_divs = chats_container.find_elements(By.XPATH, './div')
+            for chat_div in chats_divs:
+                try:
+                    span_element = chat_div.find_element(
+                        By.XPATH, './/div/div/div[2]/div[1]/div[1]//span')
+                except NoSuchElementException:
+                    try:
+                        span_element = chat_div.find_element(
+                            By.XPATH, './/div/div/div[2]/div[1]/div[1]/div//span')
+                    except Exception as e:
+                        logging.error(e)
+                        return []
+                except Exception as e:
+                    logging.error(e)
+                    return []
+
+                span_content = span_element.text
+                contacts.append(span_content)
+
+            contacts.sort()
+            return contacts
+
+        except Exception as e:
+            logging.error(e)
+            return []
 
     def save_messaging_settings(self, target, mode):
         try:
