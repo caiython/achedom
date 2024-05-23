@@ -47,11 +47,11 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main class="container my-4">
 
         {% if messages %}
             {% for message in messages %}
-            <div class=" my-3 alert {% if message.tags %}alert-{{ message.tags }} {% endif %}" role="alert">
+            <div class=" alert {% if message.tags %}alert-{{ message.tags }} {% endif %}" role="alert">
                 {{ message }}
             </div>
             {% endfor %}

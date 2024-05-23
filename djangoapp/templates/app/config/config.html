@@ -6,7 +6,7 @@
 
 {% block main %}
 
-    <h1 class="pt-3"> Config </h1>
+    <h1> Config </h1>
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <div id="whatsapp-status">
             
@@ -80,9 +80,9 @@
                         
                         Target
                         <select class="form-select form-select-sm my-2" name="target" aria-label="Target Select" {% if not whatsapp.is_authenticated %} disabled {% endif %}>
-                            <option selected> {% if whatsapp.target_selected %} {{whatsapp.target_selected}} {% endif %} </option>
+                            <option {% if not whatsapp.target_selected %} selected {% endif %}></option>
                             {% for contact in whatsapp.contacts %}
-                                <option value="{{ contact }}">{{ contact }}</option>
+                                <option value="{{ contact }}" {% if whatsapp.target_selected == contact %} selected {% endif %}>{{ contact }}</option>
                             {% endfor %}
                         </select>
                         
