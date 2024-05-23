@@ -1,0 +1,150 @@
+{% extends 'app/base.html' %}
+
+{% load static %}
+
+{% block title %} Config {% endblock%}
+
+{% block main %}
+
+    <h1 class="pt-3"> Config </h1>
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <div id="whatsapp-status">
+            
+            <h5 class="border-bottom pb-3 mb-0">
+                WhatsApp <i class="ms-2 bi bi-whatsapp"></i>
+            </h5>
+        </div>
+        <ul class="list-group">
+            <ol class="list-group-item">
+                <div class="py-3 mb-0 small lh-sm">
+                    <h6>
+                        1. Selenium Instance
+                        {% if whatsapp.is_running %}
+                            <span class="ms-1 badge rounded-pill text-bg-success">
+                                Running
+                            </span>
+                        {% else %}
+                            <span class="ms-1 badge rounded-pill text-bg-danger">
+                                Stopped
+                            </span>
+                        {% endif %}
+                    </h6>
+                    
+                    <form id="start_wa" action="{{ url.start_wa}}" method="post">{% csrf_token %}</form>
+                    <form id="stop_wa" action="{{ url.stop_wa}}" method="post">{% csrf_token %}</form>
+                    <input type="submit" value="Run" form="start_wa" class="btn btn-success btn-sm me-1" {% if whatsapp.is_running %} disabled {% endif%}></input>
+                    <input type="submit" value="Stop" form="stop_wa" class="btn btn-danger btn-sm ms-1" {% if not whatsapp.is_running %} disabled {% endif%}></input>
+                    
+                </div>
+            </ol>
+            <ol class="list-group-item">
+                <div class="py-3 mb-0 small lh-sm">
+                    <h6>
+                        2. WhatsApp Authentication
+                        {% if whatsapp.is_authenticated %}
+                            <span class="badge rounded-pill text-bg-success">
+                                Authenticated
+                            </span>
+                        {% elif whatsapp.is_waiting_for_qrcode %}
+                            <span class="ms-1 badge rounded-pill text-bg-warning">
+                                Waiting for QR Code Scan
+                            </span>
+                        {% else %}
+                            <span class="ms-1 badge rounded-pill text-bg-danger">
+                                Not Authenticated
+                            </span>
+                        {% endif %}
+                    </h6>
+                    <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#get_qrcode_modal" {% if not whatsapp.is_waiting_for_qrcode %} disabled {% endif%}>
+                        Get QR Code
+                    </button>
+                </div>
+            </ol>
+            <ol class="list-group-item">
+                <div class="py-3 mb-0 small lh-sm">
+                    <h6>
+                        3. Messaging Settings
+                        {% if whatsapp.target_selected %}
+                            <span class="badge rounded-pill text-bg-success">
+                                Set
+                            </span>
+                        {% else %}
+                            <span class="ms-1 badge rounded-pill text-bg-danger">
+                                Not Set
+                            </span>
+                        {% endif %}
+                    </h6>
+                    
+                    <form id="save_messaging_settings" action="{{ url.save_messaging_settings }}" method="post">
+                        {% csrf_token %}
+                        
+                        Target
+                        <select class="form-select form-select-sm my-2" name="target" aria-label="Target Select" {% if not whatsapp.is_authenticated %} disabled {% endif %}>
+                            <option selected> {% if whatsapp.target_selected %} {{whatsapp.target_selected}} {% endif %} </option>
+                            {% for contact in whatsapp.contacts %}
+                                <option value="{{ contact }}">{{ contact }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        Mode
+                        <select class="form-select form-select-sm my-2" name="mode" aria-label="Mode Select" {% if not whatsapp.is_authenticated %} disabled {% endif %}>
+                            <option {% if not whatsapp.mode_selected %} selected {% endif %}></option>
+                            <option value="Auto" {% if whatsapp.mode_selected == 'Auto' %} selected {% endif %}>Auto</option>
+                            <option value="Manual" {% if whatsapp.mode_selected == 'Manual' %} selected {% endif %}>Manual</option>
+                        </select>
+                    </form>
+                    <form id="clear_messaging_settings" action="{{ url.clear_messaging_settings }}" method="post">{% csrf_token %}</form>
+                    
+                    <input type="submit" value="Save" form="save_messaging_settings" class="btn btn-success btn-sm me-1" {% if not whatsapp.is_authenticated %} disabled {% endif%}></input>
+                    <input type="submit" value="Clear" form="clear_messaging_settings" class="btn btn-danger btn-sm ms-1" {% if not whatsapp.is_authenticated or not whatsapp.target_selected %} disabled {% endif%}></input>
+                </div>
+            </ol>
+            <ol class="list-group-item">
+                <div class="py-3 mb-0 small lh-sm">
+                    <h6>
+                        4. Debug Message for Testing
+                        {% if whatsapp.target_selected %}
+                            <span class="badge rounded-pill text-bg-success">
+                                Ready
+                            </span>
+                        {% else %}
+                            <span class="ms-1 badge rounded-pill text-bg-danger">
+                                Must Have a Target
+                            </span>
+                        {% endif %}
+                    </h6>
+                    
+                    <form id="send_debug_message" action="{{ url.send_message }}" method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-2">
+                            <label for="text_message_input" class="form-label">Text Message</label>
+                            <input type="text" class="form-control" id="text_message_input" name="message" placeholder="Hey! This is a test message!" {% if not whatsapp.is_authenticated or not whatsapp.target_selected %} disabled {% endif %}>
+                        </div> 
+
+                    </form>
+                    
+                    <input type="submit" value="Send" form="send_debug_message" class="btn btn-success btn-sm me-1" {% if not whatsapp.is_authenticated or not whatsapp.target_selected %} disabled {% endif %}></input>
+                </div>
+            </ol>
+        </ul>
+    </div>
+
+    <div class="modal fade" id="get_qrcode_modal" tabindex="-1" aria-labelledby="get_qrcode_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="get_qrcode_modal_label">WhatsApp QR Code</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="rounded mx-auto d-block" src="/media/qrcode.png" alt="mdo">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
