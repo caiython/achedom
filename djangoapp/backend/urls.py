@@ -12,6 +12,7 @@ urlpatterns = [
              name='clear_messaging_settings'),
         path('send_message/', views.send_debug_message,
              name='send_message'),
+        path('update_qr_code/', views.update_qr_code, name='update_qr_code'),
     ])),
 
 ]

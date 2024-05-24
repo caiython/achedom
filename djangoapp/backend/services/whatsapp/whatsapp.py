@@ -14,6 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import logging
+from backend.tasks import celery_update_qr_code
 
 
 class Whatsapp():
@@ -39,6 +40,9 @@ class Whatsapp():
                                             keep_alive=True,
                                             options=options)
             self.browser.get('https://web.whatsapp.com/')
+
+            celery_update_qr_code.delay()
+
             return 1
         except Exception as e:
             logging.error(e)
@@ -89,7 +93,7 @@ class Whatsapp():
             img = Image.open(BytesIO(screenshot))
             x, y, w, h = qr_code.location['x'], qr_code.location['y'], qr_code.size['width'], qr_code.size['height']
             cropped_img = img.crop((x-5, y-5, x+w+5, y+h+5))
-            img_path = os.path.join(settings.MEDIA_ROOT, 'selenium/qrcode.png')
+            img_path = os.path.join(settings.MEDIA_ROOT, 'qrcode.png')
             cropped_img.save(img_path)
             return 1
         except Exception as e:

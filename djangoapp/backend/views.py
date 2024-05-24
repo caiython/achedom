@@ -1,4 +1,4 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib import messages
 from .services.whatsapp import WHATSAPP
@@ -62,3 +62,15 @@ def send_debug_message(request: HttpRequest) -> HttpResponse:
             request, 'Internal server error. Please contact system administrator.')
         logging.error(e)
         return HttpResponseRedirect(reverse('config'))
+
+
+def update_qr_code(request: HttpRequest) -> JsonResponse:
+
+    if WHATSAPP.is_authenticated():
+        return JsonResponse({'is_authenticated': True, 'is_running': True})
+
+    if WHATSAPP.is_running():
+        WHATSAPP.save_qrcode()
+        return JsonResponse({'is_authenticated': False, 'is_running': True})
+
+    return JsonResponse({'is_authenticated': False, 'is_running': False})
