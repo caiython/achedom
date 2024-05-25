@@ -36,9 +36,11 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "app",
     "authentication",
     "backend",
+    "websocket",
     "crispy_forms",
     "crispy_bootstrap5",
     "django.contrib.admin",
@@ -95,6 +97,9 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
         'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
         'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+        "TEST": {
+            "NAME": os.getenv('POSTGRES_TEST_DB', 'change-me'),
+        },
     }
 }
 
@@ -189,4 +194,18 @@ LOGGING = {
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
+}
+
+# Daphne
+ASGI_APPLICATION = "project.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(
+                os.getenv('REDIS_HOST', 'change-me'),
+                os.getenv('REDIS_PORT', 'change-me')
+            )],
+        },
+    },
 }

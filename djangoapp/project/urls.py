@@ -24,6 +24,7 @@ urlpatterns = [
     path("", include("app.urls")),
     path("backend/", include("backend.urls")),
     path("auth/", include("authentication.urls")),
+    path("websocket/", include("websocket.urls")),
 ]
 
 if settings.DEBUG:
