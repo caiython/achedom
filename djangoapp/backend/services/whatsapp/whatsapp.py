@@ -32,7 +32,7 @@ class Whatsapp():
         self.target = None
         self.mode = None
 
-    def start(self):
+    def start(self, csrf_token):
         try:
             selenium_grid_url = "http://selenium:4444/wd/hub"
             options = webdriver.FirefoxOptions()
@@ -41,7 +41,7 @@ class Whatsapp():
                                             options=options)
             self.browser.get('https://web.whatsapp.com/')
 
-            celery_update_qr_code.delay()
+            celery_update_qr_code.delay(csrf_token)
 
             return 1
         except Exception as e:

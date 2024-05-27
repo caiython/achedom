@@ -1,18 +1,19 @@
 from django.urls import path, include
 
-from . import views
+from backend.views import whatsapp
 
 urlpatterns = [
     path('whatsapp/', include([
-        path('start/', views.start_wa, name='start_wa'),
-        path('stop/', views.stop_wa, name='stop_wa'),
-        path('save_messaging_settings/', views.save_messaging_settings,
+        path('start/', whatsapp.Start.as_view(), name='start_wa'),
+        path('stop/', whatsapp.Stop.as_view(), name='stop_wa'),
+        path('save_messaging_settings/', whatsapp.SaveMessagingSettings.as_view(),
              name='save_messaging_settings'),
-        path('clear_messaging_settings/', views.clear_messaging_settings,
+        path('clear_messaging_settings/', whatsapp.ClearMessagingSettings.as_view(),
              name='clear_messaging_settings'),
-        path('send_message/', views.send_debug_message,
+        path('send_message/', whatsapp.SendDebugMessage.as_view(),
              name='send_message'),
-        path('update_qr_code/', views.update_qr_code, name='update_qr_code'),
+        path('update_qr_code/', whatsapp.UpdateQrCode.as_view(),
+             name='update_qr_code'),
     ])),
 
 ]

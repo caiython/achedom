@@ -3,16 +3,20 @@ from time import sleep
 import requests
 from django.urls import reverse
 from django.conf import settings
-import json
+from django.middleware.csrf import get_token
+from django.contrib.sessions.backends.base import SessionBase
 
 
 @shared_task
-def celery_update_qr_code():
+def celery_update_qr_code(csrf_token):
 
     while True:
         sleep(5)
-        response = requests.get(
-            'http://djangoapp:80' + reverse('update_qr_code'))
+        response = requests.post(
+            'http://djangoapp:80' + reverse('update_qr_code'),
+            headers={'X-CSRFToken': csrf_token},
+            cookies={'csrftoken': csrf_token},
+        )
 
         if response.json()['is_authenticated'] is True:
             return 1
