@@ -13,7 +13,7 @@ def celery_update_qr_code(csrf_token):
     while True:
         sleep(5)
         response = requests.post(
-            'http://djangoapp:80' + reverse('update_qr_code'),
+            'http://djangoapp:80' + reverse('backend_whatsapp_update_qr_code'),
             headers={'X-CSRFToken': csrf_token},
             cookies={'csrftoken': csrf_token},
         )

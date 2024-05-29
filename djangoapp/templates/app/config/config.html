@@ -30,10 +30,10 @@
                         {% endif %}
                     </h6>
                     
-                    <form id="start_wa" action="{{ url.start_wa}}" method="post">{% csrf_token %}</form>
-                    <form id="stop_wa" action="{{ url.stop_wa}}" method="post">{% csrf_token %}</form>
-                    <input type="submit" value="Run" form="start_wa" class="btn btn-success btn-sm me-1" {% if whatsapp.is_running %} disabled {% endif%}></input>
-                    <input type="submit" value="Stop" form="stop_wa" class="btn btn-danger btn-sm ms-1" {% if not whatsapp.is_running %} disabled {% endif%}></input>
+                    <form id="backend_whatsapp_start" action="{{ url.backend_whatsapp_start}}" method="post">{% csrf_token %}</form>
+                    <form id="backend_whatsapp_stop" action="{{ url.backend_whatsapp_stop}}" method="post">{% csrf_token %}</form>
+                    <input type="submit" value="Run" form="backend_whatsapp_start" class="btn btn-success btn-sm me-1" {% if whatsapp.is_running %} disabled {% endif%}></input>
+                    <input type="submit" value="Stop" form="backend_whatsapp_stop" class="btn btn-danger btn-sm ms-1" {% if not whatsapp.is_running %} disabled {% endif%}></input>
                     
                 </div>
             </ol>
@@ -75,7 +75,7 @@
                         {% endif %}
                     </h6>
                     
-                    <form id="save_messaging_settings" action="{{ url.save_messaging_settings }}" method="post">
+                    <form id="backend_whatsapp_save_messaging_settings" action="{{ url.backend_whatsapp_save_messaging_settings }}" method="post">
                         {% csrf_token %}
                         
                         Target
@@ -93,10 +93,10 @@
                             <option value="Manual" {% if whatsapp.mode_selected == 'Manual' %} selected {% endif %}>Manual</option>
                         </select>
                     </form>
-                    <form id="clear_messaging_settings" action="{{ url.clear_messaging_settings }}" method="post">{% csrf_token %}</form>
+                    <form id="backend_whatsapp_clear_messaging_settings" action="{{ url.backend_whatsapp_clear_messaging_settings }}" method="post">{% csrf_token %}</form>
                     
-                    <input type="submit" value="Save" form="save_messaging_settings" class="btn btn-success btn-sm me-1" {% if not whatsapp.is_authenticated %} disabled {% endif%}></input>
-                    <input type="submit" value="Clear" form="clear_messaging_settings" class="btn btn-danger btn-sm ms-1" {% if not whatsapp.is_authenticated or not whatsapp.target_selected %} disabled {% endif%}></input>
+                    <input type="submit" value="Save" form="backend_whatsapp_save_messaging_settings" class="btn btn-success btn-sm me-1" {% if not whatsapp.is_authenticated %} disabled {% endif%}></input>
+                    <input type="submit" value="Clear" form="backend_whatsapp_clear_messaging_settings" class="btn btn-danger btn-sm ms-1" {% if not whatsapp.is_authenticated or not whatsapp.target_selected %} disabled {% endif%}></input>
                 </div>
             </ol>
             <ol class="list-group-item">
@@ -114,7 +114,7 @@
                         {% endif %}
                     </h6>
                     
-                    <form id="send_debug_message" action="{{ url.send_message }}" method="post">
+                    <form id="send_debug_message" action="{{ url.backend_whatsapp_send_debug_message }}" method="post">
                         {% csrf_token %}
                         
                         <div class="mb-2">
