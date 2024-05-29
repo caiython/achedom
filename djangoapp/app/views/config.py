@@ -23,6 +23,7 @@ class Config(View):
                 'save_messaging_settings': reverse('save_messaging_settings'),
                 'clear_messaging_settings': reverse('clear_messaging_settings'),
                 'send_message': reverse('send_message'),
+                'ws_update_component': '/ws/update_component/'
             },
             'logout_url': reverse('logout'),
             'whatsapp': {

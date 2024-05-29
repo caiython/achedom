@@ -17,7 +17,7 @@
         <ul class="list-group">
             <ol class="list-group-item">
                 <div class="py-3 mb-0 small lh-sm">
-                    <h6>
+                    <h6 id="selenium-instance">
                         1. Selenium Instance
                         {% if whatsapp.is_running %}
                             <span class="ms-1 badge rounded-pill text-bg-success">
@@ -147,4 +147,16 @@
         </div>
     </div>
 
+    {{ url.ws_update_component|json_script:"ws_update_component" }}
+    <script>
+        var ws = new WebSocket('ws://' + window.location.host + "{{ url.ws_update_component }}");
+        ws.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            console.log(data)
+            if (document.getElementById(data.component_id)) {
+                $("#" + data.component_id).html(data.content);
+            }
+        };
+    </script>
+    <script src="{% static 'jquery/jquery-3.7.1.min.js' %}" ></script>
 {% endblock %}

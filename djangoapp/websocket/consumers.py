@@ -33,3 +33,38 @@ class DebugChatConsumer(AsyncWebsocketConsumer):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"message": message}))
+
+
+class ComponentConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_group_name = 'update_component'
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        component_id = text_data_json["component_id"]
+        content = text_data_json["content"]
+
+        await self.channel_layer.group_send(
+            self.room_group_name, {
+                "type": "chat.message",
+                "component_id": component_id,
+                "content": content
+            }
+        )
+
+    # Receive message from room group
+    async def chat_message(self, event):
+        component_id = event["component_id"]
+        content = event["content"]
+
+        # Send message to WebSocket
+        await self.send(
+            text_data=json.dumps({
+                "component_id": component_id,
+                "content": content
+            }))

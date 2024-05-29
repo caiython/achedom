@@ -16,6 +16,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 import logging
 from backend.tasks import celery_update_qr_code
 
+# from channels.layers import get_channel_layer
+# from asgiref.sync import async_to_sync
+
 
 class Whatsapp():
     fixtures = [
@@ -40,6 +43,17 @@ class Whatsapp():
                                             keep_alive=True,
                                             options=options)
             self.browser.get('https://web.whatsapp.com/')
+
+            # Send ws
+            # channel_layer = get_channel_layer()
+            # async_to_sync(channel_layer.group_send)(
+            #    'update_component',
+            #    {
+            #        'type': 'chat.message',
+            #        'component_id': 'selenium-instance',
+            #        'content': 'Running'
+            #    }
+            # )
 
             celery_update_qr_code.delay(csrf_token)
 
