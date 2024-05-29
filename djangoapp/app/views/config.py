@@ -17,12 +17,18 @@ class Config(View):
         ctx = {
             'is_staff': request.user.is_staff,
             'url': {
-                'backend_whatsapp_start': reverse('backend_whatsapp_start'),
-                'backend_whatsapp_stop': reverse('backend_whatsapp_stop'),
-                'backend_whatsapp_save_messaging_settings': reverse('backend_whatsapp_save_messaging_settings'),
-                'backend_whatsapp_clear_messaging_settings': reverse('backend_whatsapp_clear_messaging_settings'),
-                'backend_whatsapp_send_debug_message': reverse('backend_whatsapp_send_debug_message'),
-                'ws_update_component': '/ws/update_component/'
+                'backend': {
+                    'whatsapp': {
+                        'start': reverse('backend_whatsapp_start'),
+                        'stop': reverse('backend_whatsapp_stop'),
+                        'save_messaging_settings': reverse('backend_whatsapp_save_messaging_settings'),
+                        'clear_messaging_settings': reverse('backend_whatsapp_clear_messaging_settings'),
+                        'send_debug_message': reverse('backend_whatsapp_send_debug_message'),
+                    },
+                },
+                'ws': {
+                    'update_component': '/ws/update_component/'
+                }
             },
             'logout_url': reverse('logout'),
             'whatsapp': {
