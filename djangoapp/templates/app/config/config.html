@@ -147,9 +147,8 @@
         </div>
     </div>
 
-    {{ url.ws_update_component|json_script:"ws_update_component" }}
     <script>
-        var ws = new WebSocket('ws://' + window.location.host + "{{ url.ws_update_component }}");
+        var ws = new WebSocket('ws://' + window.location.host + "{{ url.ws.update_component }}");
         ws.onmessage = function(event) {
             var data = JSON.parse(event.data);
             console.log(data)
