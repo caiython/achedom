@@ -15,6 +15,7 @@ class Config(View):
             return HttpResponseRedirect(reverse('login'))
 
         ctx = {
+            'config': True,
             'is_staff': request.user.is_staff,
             'url': {
                 'backend': {
@@ -35,10 +36,11 @@ class Config(View):
                 'is_running': WHATSAPP.is_running(),
                 'is_waiting_for_qrcode': WHATSAPP.is_qr_code_on_screen(),
                 'is_authenticated': WHATSAPP.is_authenticated(),
-                'contacts': WHATSAPP.get_contacts(),
+                'contacts': WHATSAPP.get_contacts() if WHATSAPP.is_running() and WHATSAPP.is_authenticated() else [],
                 'target_selected': WHATSAPP.target,
                 'mode_selected': WHATSAPP.mode,
             },
+            'ws_method': "wss" if request.META.get('HTTP_X_FORWARDED_PROTO', '') == 'https' else "ws"
         }
 
         return render(request, 'app/config/config.html', ctx)
