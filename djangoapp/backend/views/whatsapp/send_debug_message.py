@@ -4,6 +4,8 @@ from django.urls import reverse
 from backend.services.whatsapp import WHATSAPP
 from django.contrib import messages
 import logging
+from backend.tasks import celery_send
+from django.middleware.csrf import get_token
 
 
 class SendDebugMessage(View):
@@ -12,8 +14,10 @@ class SendDebugMessage(View):
             return HttpResponseRedirect(reverse('config'))
 
         try:
-            WHATSAPP.send_message(
-                WHATSAPP.target, request.POST.get('message')
+            celery_send.delay(
+                target=WHATSAPP.target,
+                message=request.POST.get('message'),
+                csrf_token=get_token(request)
             )
             messages.success(request, 'Message sent.')
             return HttpResponseRedirect(reverse('config'))

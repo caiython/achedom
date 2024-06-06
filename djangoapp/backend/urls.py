@@ -22,5 +22,8 @@ urlpatterns = [
         path('update_qr_code/',
              backend.whatsapp.UpdateQrCode.as_view(),
              name='backend_whatsapp_update_qr_code'),
+        path('send/',
+             backend.whatsapp.Send.as_view(),
+             name='backend_whatsapp_send'),
     ]))
 ]

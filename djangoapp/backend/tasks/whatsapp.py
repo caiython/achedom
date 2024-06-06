@@ -25,3 +25,20 @@ def celery_update_qr_code(csrf_token):
             break
 
     return 0
+
+
+@shared_task
+def celery_send(target, message, csrf_token):
+
+    response = requests.post(
+        'http://djangoapp:80' + reverse('backend_whatsapp_send'),
+        data={"target": target, "message": message},
+        headers={'X-CSRFToken': csrf_token},
+        cookies={'csrftoken': csrf_token},
+    )
+
+    if response.json()['sent'] is True:
+        return 1
+
+    if response.json()['sent'] is False:
+        return 0
