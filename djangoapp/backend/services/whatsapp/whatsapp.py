@@ -273,8 +273,16 @@ class Whatsapp():
                     chats_container = self.browser.find_element(
                         By.XPATH, chats_xpath)
                 except NoSuchElementException:
-                    sleep(3)
-                    continue
+                    try:
+                        chats_xpath = '/html/body/div[1]/div/div/div[2]/div[3]/div/div[3]/div[2]/div/div'
+                        chats_container = self.browser.find_element(
+                            By.XPATH, chats_xpath)
+                    except NoSuchElementException:
+                        sleep(3)
+                        continue
+                    except Exception as e:
+                        logging.error(e)
+                        return []
                 except Exception as e:
                     logging.error(e)
                     return []
@@ -303,6 +311,10 @@ class Whatsapp():
                         return []
 
                     span_content = span_element.text
+
+                    if span_content is None or span_content == '' or span_content == 'WhatsApp Business' or span_content == 'WhatsApp':
+                        continue
+
                     contacts.append(span_content)
 
                 contacts.sort()
