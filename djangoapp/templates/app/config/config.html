@@ -189,7 +189,7 @@
                             </span>
                         {% endif %}
                     </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button id="close_modal_button" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div id="qr_code_image_container" class="modal-body">
                     <img id="qr_code_image" class="rounded mx-auto d-block" src="/media/qrcode.png" alt="mdo">
@@ -212,6 +212,11 @@
                     qrcode_image_element.src = "/media/qrcode.png?" + new Date().getTime();
                 } else {
                     $("#" + data.component_id).html(data.content);
+                    if (data.component_id == 'whatsapp_is_authenticated_status' && data.content == '<span class="badge rounded-pill text-bg-success">Authenticated</span>'){
+                        setTimeout(function() {
+                            document.getElementById('close_modal_button').click();
+                        }, 1000);
+                    }
                 }
             }
         };
