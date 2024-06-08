@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 from backend.services.whatsapp import WHATSAPP
+from backend.services.deskmanager import DESKMANAGER
 
 
 class Config(View):
@@ -26,6 +27,12 @@ class Config(View):
                         'clear_messaging_settings': reverse('backend_whatsapp_clear_messaging_settings'),
                         'send_debug_message': reverse('backend_whatsapp_send_debug_message'),
                     },
+                    'deskmanager': {
+                        'save_keys': reverse('backend_deskmanager_save_keys'),
+                        'clear_keys': reverse('backend_deskmanager_clear_keys'),
+                        'set_data_update_mode': reverse('backend_deskmanager_set_data_update_mode'),
+                        'clear_data_update_mode': reverse('backend_deskmanager_clear_data_update_mode'),
+                    },
                 },
                 'ws': {
                     'update_component': '/ws/update_component/'
@@ -39,6 +46,12 @@ class Config(View):
                 'contacts': WHATSAPP.get_contacts() if WHATSAPP.is_running() and WHATSAPP.is_authenticated() else [],
                 'target_selected': WHATSAPP.target,
                 'mode_selected': WHATSAPP.mode,
+            },
+            'deskmanager': {
+                'operator_key': '***********************************' + DESKMANAGER.operator_key[-5:] if DESKMANAGER.operator_key else None,
+                'ambient_key': '***********************************' + DESKMANAGER.ambient_key[-5:] if DESKMANAGER.ambient_key else None,
+                'auth_token': '********************************************' + DESKMANAGER.api_token[-5:] if DESKMANAGER.api_token else None,
+                'data_update_mode': DESKMANAGER.data_update_mode,
             },
             'ws_method': "wss" if request.META.get('HTTP_X_FORWARDED_PROTO', '') == 'https' else "ws"
         }

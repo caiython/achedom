@@ -25,5 +25,19 @@ urlpatterns = [
         path('send/',
              backend.whatsapp.Send.as_view(),
              name='backend_whatsapp_send'),
-    ]))
+    ])),
+    path('deskmanager/', include([
+        path('save_keys/',
+             backend.deskmanager.SaveKeys.as_view(),
+             name='backend_deskmanager_save_keys'),
+        path('clear_keys/',
+             backend.deskmanager.ClearKeys.as_view(),
+             name='backend_deskmanager_clear_keys'),
+        path('set_data_update_mode/',
+             backend.deskmanager.SetDataUpdateMode.as_view(),
+             name='backend_deskmanager_set_data_update_mode'),
+        path('clear_messaging_settings/',
+             backend.deskmanager.ClearDataUpdateMode.as_view(),
+             name='backend_deskmanager_clear_data_update_mode')
+    ])),
 ]

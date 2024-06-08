@@ -201,6 +201,99 @@
         </div>
     </div>
 
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <div id="deskmanager-status">
+            <h5 class="border-bottom pb-3 mb-0">
+                DeskManager <img width="25" src="{% static 'config/deskmanager.svg' %}" alt="DeskManager Logo" class="ms-2">
+            </h5>
+        </div>
+        <ul class="list-group">
+            <ol class="list-group-item">
+                <div class="py-3 mb-0 small lh-sm">
+                    <h6 id="deskmanager-api-keys">
+                        1. API Authorization
+                        <span id="deskmanager-api-keys-status">
+                            {% if deskmanager.operator_key and deskmanager.ambient_key and deskmanager.auth_token %}
+                                <span class="ms-1 badge rounded-pill text-bg-success">
+                                    Authorized
+                                </span>
+                            {% else %}
+                                <span class="ms-1 badge rounded-pill text-bg-danger">
+                                    Not Authorized
+                                </span>
+                            {% endif %}
+                        </span>
+                    </h6>
+                    <form id="backend_deskmanager_save_keys" action="{{ url.backend.deskmanager.save_keys }}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label for="operator_key_input" class="form-label">Operator Key</label>
+                            <span id="operator_key_input_box">
+                                <input type="text" class="form-control" id="operator_key_input" name="operator_key" {% if deskmanager.operator_key %} placeholder='{{ deskmanager.operator_key }}' disabled {% endif %}>
+                            </span>
+                        </div>
+                        <div class="mb-2">
+                            <label for="ambient_key_input" class="form-label">Ambient Key</label>
+                            <span id="ambient_key_input_box">
+                                <input type="text" class="form-control" id="ambient_key_input" name="ambient_key" {% if deskmanager.ambient_key %} placeholder='{{ deskmanager.ambient_key }}' disabled {% endif %}>
+                            </span>
+                        </div>
+                    </form>
+                    <form id="backend_deskmanager_clear_keys" action="{{ url.backend.deskmanager.clear_keys }}" method="post">{% csrf_token %}</form>
+
+                    <span id="save_deskmanager_keys_button">
+                        <input type="submit" value="Authorize" form="backend_deskmanager_save_keys" class="btn btn-success btn-sm me-1" {% if deskmanager.operator_key or deskmanager.ambient_key %} disabled {% endif %}></input>
+                    </span>
+                    <span id="clear_deskmanager_keys_button">
+                        <input type="submit" value="Deauthorize" form="backend_deskmanager_clear_keys" class="btn btn-danger btn-sm ms-1" {% if not deskmanager.operator_key or not deskmanager.ambient_key %} disabled {% endif %}></input>
+                    </span>
+                </div>
+            </ol>
+            <ol class="list-group-item">
+                <div class="py-3 mb-0 small lh-sm">
+                    <h6 id="deskmanager-data-update-mode">
+                        2. Data Update Mode
+                        <span id="deskmanager-data-update-mode-status">
+                        {% if deskmanager.auth_token and deskmanager.data_update_mode %}
+                            <span class="ms-1 badge rounded-pill text-bg-success">
+                                Set
+                            </span>
+                        {% else %}
+                            <span class="ms-1 badge rounded-pill text-bg-danger">
+                                Not set
+                            </span>
+                        {% endif %}
+                        </span>
+                    </h6>
+                    <form id="backend_deskmanager_save_data_update_mode" action="{{ url.backend.deskmanager.set_data_update_mode }}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label for="data_update_mode_select" class="form-label">Mode</label>
+                            <span id="data_update_mode">
+                                <select id="data_update_mode_select" class="form-select form-select-sm" name="mode" aria-label="Mode Select" {% if not deskmanager.auth_token %} disabled {% endif %}>
+
+                                    {% if not deskmanager.data_update_mode %}
+                                        <option selected></option>
+                                    {% endif %}
+                                    <option value="Auto" {% if deskmanager.data_update_mode == 'Auto' %} selected {% endif %}>Auto</option>
+                                    <option value="Manual" {% if deskmanager.data_update_mode == 'Manual' %} selected {% endif %}>Manual</option>
+                                </select>
+                            </span>
+                        </div>
+                    </form>
+                    <form id="backend_deskmanager_clear_data_update_mode" action="{{ url.backend.deskmanager.clear_data_update_mode }}" method="post">{% csrf_token %}</form>
+                    
+                    <span id="save_deskmanager_data_update_mode_button">
+                        <input type="submit" value="Set" form="backend_deskmanager_save_data_update_mode" class="btn btn-success btn-sm me-1" {% if not deskmanager.auth_token %} disabled {% endif %}></input>
+                    </span>
+                    <span id="clear_deskmanager_data_update_mode_button">
+                        <input type="submit" value="Reset" form="backend_deskmanager_clear_data_update_mode" class="btn btn-danger btn-sm ms-1" {% if not deskmanager.auth_token or not deskmanager.data_update_mode %} disabled {% endif %}></input>
+                    </span>
+                </div>
+            </ol>
+        </ul>
+    </div>
+
     <script>
         var ws = new WebSocket("{{ws_method}}://" + window.location.host + "{{ url.ws.update_component }}");
         ws.onmessage = function(event) {
