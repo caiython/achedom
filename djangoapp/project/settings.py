@@ -36,9 +36,11 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "app",
     "authentication",
     "backend",
+    "websocket",
     "crispy_forms",
     "crispy_bootstrap5",
     "django.contrib.admin",
@@ -95,6 +97,9 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
         'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
         'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+        "TEST": {
+            "NAME": os.getenv('POSTGRES_TEST_DB', 'change-me'),
+        },
     }
 }
 
@@ -141,6 +146,9 @@ MEDIA_URL = "media/"
 # /data/web/media
 MEDIA_ROOT = DATA_DIR / 'media'
 
+# SERVE STATIC BESIDES DEBUG MODE (NOT RECOMMENDED)
+SERVE_STATIC = bool(int(os.getenv('SERVE_STATIC', 0)))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -165,13 +173,13 @@ LOGGING = {
     "handlers": {
         "file": {
             "class": "logging.FileHandler",
-            "filename": "general.log",
+            "filename": "debug.log" if DEBUG else "general.log",
             "formatter": "verbose",
         },
     },
     "loggers": {
         "": {
-            "level": "DEBUG",
+            "level": "DEBUG" if DEBUG else "INFO",
             "handlers": ["file"],
         },
     },
@@ -189,4 +197,18 @@ LOGGING = {
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
+}
+
+# Daphne
+ASGI_APPLICATION = "project.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(
+                os.getenv('REDIS_HOST', 'change-me'),
+                os.getenv('REDIS_PORT', 'change-me')
+            )],
+        },
+    },
 }

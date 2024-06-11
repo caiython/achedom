@@ -1,4 +1,4 @@
-FROM python:3.12.2-alpine3.18
+FROM python:3.12.3-alpine3.20
 LABEL mantainer="caiocvlopes@gmail.com"
 
 # Essa variável de ambiente é usada para controlar se o Python deve 
