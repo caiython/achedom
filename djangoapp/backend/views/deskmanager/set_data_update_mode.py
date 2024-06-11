@@ -16,8 +16,6 @@ class SetDataUpdateMode(View):
             return HttpResponseRedirect(reverse('config'))
 
         DESKMANAGER.set_data_update_mode(request.POST.get('mode'))
-        if DESKMANAGER.data_update_mode == 'Auto':
-            celery_auto_update_data.delay(get_token(request))
 
         channel_layer = get_channel_layer()
 

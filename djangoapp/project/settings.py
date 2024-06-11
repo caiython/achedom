@@ -170,13 +170,13 @@ LOGGING = {
     "handlers": {
         "file": {
             "class": "logging.FileHandler",
-            "filename": "general.log",
+            "filename": "debug.log" if DEBUG else "general.log",
             "formatter": "verbose",
         },
     },
     "loggers": {
         "": {
-            "level": "DEBUG",
+            "level": "DEBUG" if DEBUG else "INFO",
             "handlers": ["file"],
         },
     },

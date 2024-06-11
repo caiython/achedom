@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views import View
+from django.conf import settings
 from backend.services.deskmanager import DESKMANAGER
 from backend.services.whatsapp import WHATSAPP
 from backend.models import ServiceOrder
@@ -8,10 +9,18 @@ from html import unescape
 
 
 class UpdateData(View):
-    def post(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: HttpRequest) -> JsonResponse:
 
-        if request.POST.get('auto_update') and DESKMANAGER.data_update_mode != 'Auto':
-            return JsonResponse({'auto_updated': False})
+        authorization_header = request.headers.get('Authorization')
+
+        if not authorization_header or not authorization_header.startswith('SecretKey'):
+            return JsonResponse({'message': 'Unauthorized'}, status=401)
+
+        if authorization_header.split(' ')[1] != settings.SECRET_KEY:
+            return JsonResponse({'message': 'Unauthorized'}, status=401)
+
+        if request.GET.get('auto_update') and DESKMANAGER.data_update_mode != 'Auto':
+            return JsonResponse({'auto_updated': False}, status=200)
 
         if not ServiceOrder.objects.exists():
             newest_service_order = ServiceOrder(
@@ -23,10 +32,10 @@ class UpdateData(View):
                 if sent:
                     newest_service_order.whatsapp_sent = True
                     newest_service_order.save()
-            return JsonResponse({'auto_update': request.POST.get('auto_update')})
+            return JsonResponse({'auto_updated': request.GET.get('auto_update')})
 
         if DESKMANAGER.is_updating_data:
-            return JsonResponse({'auto_update': request.POST.get('auto_update')})
+            return JsonResponse({'auto_updated': request.GET.get('auto_update')})
 
         DESKMANAGER.is_updating_data = True
 
@@ -52,7 +61,7 @@ class UpdateData(View):
 
             break
 
-        return JsonResponse({'auto_update': request.POST.get('auto_update')})
+        return JsonResponse({'auto_updated': request.GET.get('auto_update')})
 
 
 def _updated_data_through_code_sum(last_service_order_code_on_db):

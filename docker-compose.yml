@@ -51,6 +51,7 @@ services:
     depends_on:
       - redis
       - celerybroker
+      - djangoapp
     networks:
       - app-network
 
@@ -62,6 +63,23 @@ services:
     restart: unless-stopped
     ports:
       - 5672:5672
+    networks:
+      - app-network
+
+  celerybeat:
+    container_name: celerybeat
+    image: celery:5.2.0
+    build:
+      context: .
+    command: celery -A project beat --loglevel=info
+    restart: unless-stopped
+    volumes:
+      - ./djangoapp:/djangoapp
+    env_file:
+      - ./dotenv_files/.env
+    depends_on:
+      - redis
+      - celerybroker
     networks:
       - app-network
 
