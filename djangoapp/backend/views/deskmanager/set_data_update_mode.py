@@ -6,6 +6,9 @@ from backend.services.deskmanager import DESKMANAGER
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+from django.middleware.csrf import get_token
+from backend.tasks import celery_auto_update_data
+
 
 class SetDataUpdateMode(View):
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -13,6 +16,8 @@ class SetDataUpdateMode(View):
             return HttpResponseRedirect(reverse('config'))
 
         DESKMANAGER.set_data_update_mode(request.POST.get('mode'))
+        if DESKMANAGER.data_update_mode == 'Auto':
+            celery_auto_update_data.delay(get_token(request))
 
         channel_layer = get_channel_layer()
 

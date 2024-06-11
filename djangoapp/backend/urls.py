@@ -38,6 +38,9 @@ urlpatterns = [
              name='backend_deskmanager_set_data_update_mode'),
         path('clear_messaging_settings/',
              backend.deskmanager.ClearDataUpdateMode.as_view(),
-             name='backend_deskmanager_clear_data_update_mode')
+             name='backend_deskmanager_clear_data_update_mode'),
+        path('update_data/',
+             backend.deskmanager.UpdateData.as_view(),
+             name='backend_deskmanager_update_data'),
     ])),
 ]

@@ -34,6 +34,7 @@ class DeskManager:
         self.ambient_key = None
         self.api_token = None
         self.data_update_mode = None
+        self.is_updating_data = False
 
     def set_keys(self, chave_do_operador: str | None, chave_do_ambiente: str | None) -> bool:
 
