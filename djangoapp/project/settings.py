@@ -146,6 +146,9 @@ MEDIA_URL = "media/"
 # /data/web/media
 MEDIA_ROOT = DATA_DIR / 'media'
 
+# SERVE STATIC BESIDES DEBUG MODE (NOT RECOMMENDED)
+SERVE_STATIC = bool(int(os.getenv('SERVE_STATIC', 0)))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
