@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,7 +36,13 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "app",
+    "authentication",
+    "backend",
+    "websocket",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,6 +50,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+# Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -59,7 +70,7 @@ ROOT_URLCONF = "project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR, 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -86,6 +97,9 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
         'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
         'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+        "TEST": {
+            "NAME": os.getenv('POSTGRES_TEST_DB', 'change-me'),
+        },
     }
 }
 
@@ -132,6 +146,9 @@ MEDIA_URL = "media/"
 # /data/web/media
 MEDIA_ROOT = DATA_DIR / 'media'
 
+# SERVE STATIC BESIDES DEBUG MODE (NOT RECOMMENDED)
+SERVE_STATIC = bool(int(os.getenv('SERVE_STATIC', 0)))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -141,4 +158,57 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_TIMEZONE = "America/Sao_Paulo"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-BROKER_URL = os.getenv('BROKER_URL')
+BROKER_URL = os.getenv('BROKER_URL', 'change-me')
+
+AUTH_USER_MODEL = "authentication.User"
+
+CSRF_TRUSTED_ORIGINS = [
+    h.strip() for h in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if h.strip()
+]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "debug.log" if DEBUG else "general.log",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "": {
+            "level": "DEBUG" if DEBUG else "INFO",
+            "handlers": ["file"],
+        },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+}
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
+
+# Daphne
+ASGI_APPLICATION = "project.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(
+                os.getenv('REDIS_HOST', 'change-me'),
+                os.getenv('REDIS_PORT', 'change-me')
+            )],
+        },
+    },
+}

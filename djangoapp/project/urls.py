@@ -17,11 +17,15 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.static import serve
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("app.urls")),
+    path("backend/", include("backend.urls")),
+    path("auth/", include("authentication.urls")),
+    path("websocket/", include("websocket.urls")),
 ]
 
 if settings.DEBUG:
@@ -29,3 +33,11 @@ if settings.DEBUG:
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
     )
+
+elif settings.SERVE_STATIC:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve,
+                {'document_root': settings.MEDIA_ROOT}),
+        re_path(r'^static/(?P<path>.*)$', serve,
+                {'document_root': settings.STATIC_ROOT}),
+    ]

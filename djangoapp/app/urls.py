@@ -1,8 +1,10 @@
 from django.urls import path
 
-from . import views
+from app.views import *
 
 urlpatterns = [
-    path('', views.index, name='home'),
-    path('celery_hello_world/', views.celery_hello_world, name='celery_hello_world')
+    path('welcome/', Welcome.as_view(), name='welcome'),
+    path('', Home.as_view(), name='home'),
+    path('service_orders/', ServiceOrders.as_view(), name='service_orders'),
+    path('config/', Config.as_view(), name='config'),
 ]

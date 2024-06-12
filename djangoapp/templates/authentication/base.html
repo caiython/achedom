@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achedom | {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bootstrap5.3/css/bootstrap.min.css' %}"></link>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'base/achedom.ico' %}">
+    <style>
+        .asteriskField{
+            display: None
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-dark">
+        <div class="container d-flex align-items-center justify-content-center vh-100">
+            <div class="col-lg-6 border bg-light rounded p-5">
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }} {% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <p><a class="link link-secondary" href="{{ back_to }}"><i class="bi bi-arrow-left-short"></i>Back to {% block back_to %}{% endblock %}</a></p>
+
+                <h2 class="display-6">{% block title_text %}{% endblock %}</h2>
+                {% load crispy_forms_tags %}
+                {% crispy form form.helper %}
+                {% block form_foot %} {% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

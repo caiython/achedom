@@ -1,4 +1,4 @@
-FROM python:3.12.2-alpine3.18
+FROM python:3.12.3-alpine3.20
 LABEL mantainer="caiocvlopes@gmail.com"
 
 # Essa variável de ambiente é usada para controlar se o Python deve 
@@ -44,7 +44,7 @@ RUN python -m venv /venv && \
 ENV PATH="/scripts:/venv/bin:$PATH"
 
 # Muda o usuário para duser
-USER duser
+USER root
 
 # Executa o arquivo scripts/commands.sh
 CMD ["commands.sh"]
