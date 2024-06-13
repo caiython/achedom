@@ -122,5 +122,26 @@ class DeskManager:
             new_sufix = "000000"
         return new_sufix
 
+    def build_whatsapp_message(self, service_order_data: dict) -> str:
+        lines = [
+            "*NOVO CHAMADO!*",
+            "```",
+            f"Distribuição: {service_order_data.get('operator')}",
+            "",
+            f"1. Código do Chamado: {service_order_data.get('service_order_code')}",
+            f"Data e Hora de Criação: {service_order_data.get('creation_datetime').strftime('%d/%m/%y, %H:%M')}",
+            f"Solicitante: {service_order_data.get('user')} - {service_order_data.get('customer')}",
+            f"Prioridade: {service_order_data.get('priority')}",
+            "",
+            "",
+            f"Assunto: {service_order_data.get('subject')}",
+            "",
+            "Descrição:",
+            "",
+            f"{str(service_order_data.get('description')).strip()}",
+            "```",
+        ]
+        return "\n".join(lines)
+
 
 DESKMANAGER = DeskManager()
