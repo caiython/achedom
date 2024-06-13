@@ -28,7 +28,7 @@ class UpdateData(View):
             newest_service_order.save()
             if WHATSAPP.target and WHATSAPP.mode == 'Auto':
                 sent = WHATSAPP.send_message(
-                    WHATSAPP.target, _build_whatsapp_message(newest_service_order.to_dict()))
+                    WHATSAPP.target, DESKMANAGER.build_whatsapp_message(newest_service_order.to_dict()))
                 if sent:
                     newest_service_order.whatsapp_sent = True
                     newest_service_order.save()
@@ -75,7 +75,7 @@ def _updated_data_through_code_sum(last_service_order_code_on_db):
         new_service_order.save()
         if WHATSAPP.target and WHATSAPP.mode == 'Auto':
             sent = WHATSAPP.send_message(
-                WHATSAPP.target, _build_whatsapp_message(new_service_order.to_dict()))
+                WHATSAPP.target, DESKMANAGER.build_whatsapp_message(new_service_order.to_dict()))
             if sent:
                 new_service_order.whatsapp_sent = True
                 new_service_order.save()
@@ -94,7 +94,7 @@ def _updated_data_through_checking_date(last_service_order_code_on_db):
         new_service_order.save()
         if WHATSAPP.target and WHATSAPP.mode == 'Auto':
             sent = WHATSAPP.send_message(
-                WHATSAPP.target, _build_whatsapp_message(new_service_order.to_dict()))
+                WHATSAPP.target, DESKMANAGER.build_whatsapp_message(new_service_order.to_dict()))
             if sent:
                 new_service_order.whatsapp_sent = True
                 new_service_order.save()
@@ -113,26 +113,3 @@ def _process_service_order_data(service_order_data: dict) -> dict:
         'description': unescape(service_order_data['Descricao']),
         'operator': service_order_data['NomeOperador'] + ' ' + service_order_data['SobrenomeOperador'] if 'NomeOperador' in service_order_data else 'SERVICE DESK'
     }
-
-
-def _build_whatsapp_message(service_order_data: dict) -> str:
-
-    lines = [
-        "*NOVO CHAMADO!*",
-        "```",
-        f"Distribuição: {service_order_data.get('operator')}",
-        "",
-        f"1. Código do Chamado: {service_order_data.get('service_order_code')}",
-        f"Data e Hora de Criação: {service_order_data.get('creation_datetime').strftime('%d/%m/%y, %H:%M')}",
-        f"Solicitante: {service_order_data.get('user')} - {service_order_data.get('customer')}",
-        f"Prioridade: {service_order_data.get('priority')}",
-        "",
-        "",
-        f"Assunto: {service_order_data.get('subject')}",
-        "",
-        "Descrição:",
-        "",
-        f"{str(service_order_data.get('description')).strip()}",
-        "```",
-    ]
-    return "\n".join(lines)

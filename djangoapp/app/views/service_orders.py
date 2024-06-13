@@ -9,7 +9,7 @@ from backend.services.whatsapp import WHATSAPP
 
 
 class ServiceOrders(View):
-    def get(self, request: HttpRequest, page_number: str | None = '1') -> HttpResponse:
+    def get(self, request: HttpRequest, page_number: str | None) -> HttpResponse:
 
         if not request.user.is_authenticated:
             messages.warning(
@@ -19,7 +19,7 @@ class ServiceOrders(View):
         service_order_list = ServiceOrder.objects.all().order_by('id').reverse()
         paginator = Paginator(service_order_list, 9)
 
-        page_obj = paginator.get_page(int(page_number))
+        page_obj = paginator.get_page(int(page_number) if page_number else 1)
 
         ctx = {
             'service_orders': True,
@@ -29,6 +29,13 @@ class ServiceOrders(View):
             'whatsapp': {
                 'mode_selected': WHATSAPP.mode,
             },
+            'url': {
+                'backend': {
+                    'whatsapp': {
+                        'send_manual_message': reverse('backend_whatsapp_send_manual_message'),
+                    },
+                },
+            }
         }
 
         return render(request, 'app/service_orders.html', ctx)
