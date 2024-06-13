@@ -9,7 +9,7 @@ from backend.services.whatsapp import WHATSAPP
 
 
 class ServiceOrders(View):
-    def get(self, request: HttpRequest, page_number: str | None) -> HttpResponse:
+    def get(self, request: HttpRequest, page_number: str | None = None) -> HttpResponse:
 
         if not request.user.is_authenticated:
             messages.warning(
