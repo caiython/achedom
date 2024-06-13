@@ -75,7 +75,7 @@ def _updated_data_through_code_sum(last_service_order_code_on_db):
     search_result = DESKMANAGER.service_order_search(
         new_service_order_code)
     if search_result is None:
-        return 0
+        return 1
     if len(search_result) != 0:
         new_service_order = ServiceOrder(
             **_process_service_order_data(search_result[0]))
@@ -96,7 +96,7 @@ def _updated_data_through_checking_date(last_service_order_code_on_db):
     search_result = DESKMANAGER.service_order_search(
         next_date_service_order_code)
     if search_result is None:
-        return 0
+        return 1
     if len(search_result) != 0:
         new_service_order = ServiceOrder(
             **_process_service_order_data(search_result[0]))
