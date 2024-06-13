@@ -23,8 +23,13 @@ class UpdateData(View):
             return JsonResponse({'auto_updated': False}, status=200)
 
         if not ServiceOrder.objects.exists():
+            search_result = DESKMANAGER.service_order_search('')
+
+            if search_result is None:
+                return JsonResponse({'auto_updated': request.GET.get('auto_update')})
+
             newest_service_order = ServiceOrder(
-                **_process_service_order_data(DESKMANAGER.service_order_search('')[0]))
+                **_process_service_order_data(search_result[0]))
             newest_service_order.save()
             if WHATSAPP.target and WHATSAPP.mode == 'Auto':
                 sent = WHATSAPP.send_message(
@@ -69,6 +74,8 @@ def _updated_data_through_code_sum(last_service_order_code_on_db):
         last_service_order_code_on_db)
     search_result = DESKMANAGER.service_order_search(
         new_service_order_code)
+    if search_result is None:
+        return 0
     if len(search_result) != 0:
         new_service_order = ServiceOrder(
             **_process_service_order_data(search_result[0]))
@@ -88,6 +95,8 @@ def _updated_data_through_checking_date(last_service_order_code_on_db):
         last_service_order_code_on_db)
     search_result = DESKMANAGER.service_order_search(
         next_date_service_order_code)
+    if search_result is None:
+        return 0
     if len(search_result) != 0:
         new_service_order = ServiceOrder(
             **_process_service_order_data(search_result[0]))
