@@ -2,4 +2,128 @@
 
 {% block title %} Service Orders {% endblock%}
 
-{% block main %} {% endblock %}
+{% block main %}
+
+    <h1> Service Orders </h1>
+    <div class="row">
+        {% for obj in page_obj %}
+        <div class="col-lg-4 my-3">
+            <div class="card card-cover h-100 border-light overflow-hidden text-bg-dark rounded-4 bg-dark">
+                <div class="d-flex flex-column h-100 p-5 text-white text-shadow-1">
+                    <div class='mb-4'>
+                        <h3 class="lh-1 fw-bold text-center">
+                            SERVICE ORDER
+                        </h3>
+                        <h3 class="lh-1 fw-bold text-center font-monospace">
+                            {{ obj.service_order_code }}
+                        </h3>
+                    </div>
+                    <div class="mb-2">
+                        <p class="mb-0 fw-light">
+                            Subject
+                        </p>
+                        <p class="mb-0 font-monospace">
+                            {{ obj.subject|truncatechars:32 }}
+                        </p>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <p class="mb-0 fw-light">
+                            User
+                        </p>
+                        <p class="mb-0 font-monospace">
+                            {{ obj.user|truncatechars:32 }}
+                        </p>
+                    </div>
+
+                    <div class="mb-2">
+                        <p class="mb-0 fw-light">
+                            Customer
+                        </p>
+                        <p class="mb-0 font-monospace">
+                            {{ obj.customer|truncatechars:32 }}
+                        </p>
+                    </div>
+
+                    <div class="mb-2">
+                        <p class="mb-0 fw-light">
+                            Creation Date Time
+                        </p>
+                        <p class="mb-0 font-monospace">
+                            {{ obj.creation_datetime|date:"d/m/Y - H:i"}}
+                        </p>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <p class="mb-0 fw-light">
+                            Priority
+                        </p>
+                        <p class="mb-0 font-monospace">
+                            {{ obj.priority|truncatechars:32 }}
+                        </p>
+                    </div>
+
+                    <div class="mb-2">
+                        <p class="mb-0 fw-light">
+                            Distribution
+                        </p>
+                        <p class="mb-0 font-monospace">
+                            {{ obj.operator|truncatechars:32 }}
+                        </p>
+                    </div>
+
+                    <div class="mt-2 d-grid gap-2">
+                        <button type="button" class="btn d-grid gap-2 {% if not obj.whatsapp_sent %} btn-success {% endif %}" {% if obj.whatsapp_sent or whatsapp.mode_selected != 'Manual' %} disabled {% endif %}>
+                            {% if not obj.whatsapp_sent %}
+                                Send
+                            {% else %}
+                                Sent
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination justify-content-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination m-0">
+                {% if page_obj.has_previous %}
+                
+                <li class="page-item pagination-color-black">
+                    <a class="page-link text-bg-dark" href="/service_orders/1" aria-label="First Page">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item pagination-color-black">
+                    <a class="page-link text-bg-dark" href="/service_orders/{{ page_obj.previous_page_number }}" aria-label="Previous Page">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="page-item">
+                    <a class="page-link text-bg-light disabled" style="user-select: none;" href="/chamados/1">
+                        {{ page_obj.number }}
+                    </a>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item pagination-color-black">
+                    <a class="page-link text-bg-dark" href="/service_orders/{{ page_obj.next_page_number }}" aria-label="Next Page">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item pagination-color-black">
+                    <a class="page-link text-bg-dark" href="/service_orders/{{ page_obj.paginator.num_pages }}" aria-label="Last Page">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}
