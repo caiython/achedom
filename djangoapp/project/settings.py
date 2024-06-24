@@ -212,3 +212,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# SELENIUM
+SE_NODE_SESSION_TIMEOUT = int(os.getenv('SE_NODE_SESSION_TIMEOUT', 300))
