@@ -18,7 +18,7 @@ def celery_auto_update_data():
     return 1 if response.json().get('auto_updated') else 0
 
 
-app.conf.beat_schedule = {
+app.conf.beat_schedule = app.conf.beat_schedule | {
     'periodic-check-deskmanager-auto-update': {
         'task': 'backend.tasks.deskmanager.celery_auto_update_data',
         'schedule': 60.0,
