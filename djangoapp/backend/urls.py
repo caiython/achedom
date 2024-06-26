@@ -25,6 +25,12 @@ urlpatterns = [
         path('send/',
              backend.whatsapp.Send.as_view(),
              name='backend_whatsapp_send'),
+        path('send_manual_message/',
+             backend.whatsapp.SendManualMessage.as_view(),
+             name='backend_whatsapp_send_manual_message'),
+        path('prevent_selenium_session_timeout/',
+             backend.whatsapp.PreventSeleniumSessionTimeout.as_view(),
+             name='backend_whatsapp_prevent_selenium_session_timeout'),
     ])),
     path('deskmanager/', include([
         path('save_keys/',

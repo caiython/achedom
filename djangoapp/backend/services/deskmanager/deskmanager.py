@@ -12,12 +12,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import logging
-from backend.tasks import celery_update_qr_code
 
-from channels.layers import get_channel_layer
 
-from asgiref.sync import async_to_sync
 from requests.api import post
+from requests.exceptions import JSONDecodeError
+
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -58,18 +57,35 @@ class DeskManager:
         self.data_update_mode = None
         return True
 
-    # Realiza uma pesquisa através dos dados informados na variável "pesquisa"
-    def service_order_search(self, search):
+    def service_order_search(self, search: str) -> dict | None:
         parameters = {"Pesquisa": search}
         try:
             api_response = post(r"https://api.desk.ms/ChamadosSuporte/lista",
                                 json=parameters,
                                 headers={"Authorization": self.api_token}).json()['root']
         except KeyError:
-            self.set_keys(self.operator_key, self.ambient_key)
-            api_response = post(r"https://api.desk.ms/ChamadosSuporte/lista",
-                                json=parameters,
-                                headers={"Authorization": self.api_token}).json()['root']
+            # Auth key probably expired. Reset it and try again.
+            try:
+                self.set_keys(self.operator_key, self.ambient_key)
+                api_response = post(r"https://api.desk.ms/ChamadosSuporte/lista",
+                                    json=parameters,
+                                    headers={"Authorization": self.api_token}).json()['root']
+            except JSONDecodeError:
+                # Fail on request
+                return None
+
+            except Exception as e:
+                logging.error(e)
+                return None
+
+        except JSONDecodeError:
+            # Fail on request
+            return None
+
+        except Exception as e:
+            logging.error(e)
+            return None
+
         return api_response
 
     # Retorna os dados de um chamado a partir de sua chave primária
@@ -121,6 +137,27 @@ class DeskManager:
         else:
             new_sufix = "000000"
         return new_sufix
+
+    def build_whatsapp_message(self, service_order_data: dict) -> str:
+        lines = [
+            "*NOVO CHAMADO!*",
+            "```",
+            f"Distribuição: {service_order_data.get('operator')}",
+            "",
+            f"1. Código do Chamado: {service_order_data.get('service_order_code')}",
+            f"Data e Hora de Criação: {service_order_data.get('creation_datetime').strftime('%d/%m/%y, %H:%M')}",
+            f"Solicitante: {service_order_data.get('user')} - {service_order_data.get('customer')}",
+            f"Prioridade: {service_order_data.get('priority')}",
+            "",
+            "",
+            f"Assunto: {service_order_data.get('subject')}",
+            "",
+            "Descrição:",
+            "",
+            f"{str(service_order_data.get('description')).strip()}",
+            "```",
+        ]
+        return "\n".join(lines)
 
 
 DESKMANAGER = DeskManager()

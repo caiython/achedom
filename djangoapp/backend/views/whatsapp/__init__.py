@@ -5,3 +5,5 @@ from .start import Start
 from .stop import Stop
 from .update_qr_code import UpdateQrCode
 from .send import Send
+from .send_manual_message import SendManualMessage
+from .prevent_selenium_session_timeout import PreventSeleniumSessionTimeout
